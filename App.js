@@ -8,7 +8,7 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, NativeModules} from 'react-native';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -18,13 +18,29 @@ const instructions = Platform.select({
 });
 
 type Props = {};
+  var IS_LOCATION_SERVICE_ENABLED = false;
 export default class App extends Component<Props> {
+  constructor(props) {
+    super(props)
+    this.state={
+      IS_LOCATION_SERVICE_ENABLED: false
+      }
+  }
+   componentDidMount() {
+     this.checkLocactionServiceStatus();
+  }
+  async checkLocactionServiceStatus() {
+    IS_LOCATION_SERVICE_ENABLED = await NativeModules.CheckLocationServiceIsEnabled.isLcationServiceEnabled();
+
+    this.setState({IS_LOCATION_SERVICE_ENABLED: IS_LOCATION_SERVICE_ENABLED})
+    console.log(this.state.IS_LOCATION_SERVICE_ENABLED);
+  }
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <Text style={styles.welcome}>Welcome to React Native! </Text>
+        <Text style={styles.instructions}>Example to check Android Locaction Service is enabled?</Text>
+        <Text style={styles.instructions}>Locaction Service Status : { (this.state.IS_LOCATION_SERVICE_ENABLED).toString() }</Text>
       </View>
     );
   }
